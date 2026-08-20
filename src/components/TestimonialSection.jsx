@@ -1,0 +1,304 @@
+import React, { useState } from 'react';
+import { ArrowLeft, ArrowRight, Star } from 'lucide-react';
+import { TESTIMONIALS_DATA } from '../data/products';
+import DraggableTextBlock from './DraggableTextBlock';
+
+export default function TestimonialSection() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const current = TESTIMONIALS_DATA[currentIndex];
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev === 0 ? TESTIMONIALS_DATA.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === TESTIMONIALS_DATA.length - 1 ? 0 : prev + 1));
+  };
+
+  return (
+    <section
+      id="reviews"
+      style={{
+        paddingTop: '6rem',
+        paddingBottom: '6rem',
+        backgroundColor: '#ffffff',
+        position: 'relative',
+      }}
+    >
+      <div className="site-container">
+        {/* Top Header Bar: 01/8 | [Testimonial] | " */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '3rem',
+          }}
+          className="reveal-blur"
+        >
+          {/* Counter: 01/8 */}
+          <div style={{ display: 'flex', alignItems: 'baseline' }}>
+            <span
+              style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: '3rem',
+                fontWeight: 800,
+                color: '#000000',
+                lineHeight: '1',
+                letterSpacing: '-0.03em',
+              }}
+            >
+              0{currentIndex + 1}
+            </span>
+            <span
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '1.4rem',
+                color: '#a1a1aa',
+                fontWeight: 500,
+              }}
+            >
+              /8
+            </span>
+          </div>
+
+          {/* Center Tag: [Testimonial] */}
+          <DraggableTextBlock
+            id="testimonial_tag"
+            as="div"
+            defaultText="[Testimonial]"
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              letterSpacing: '0.04em',
+              color: '#18181b',
+            }}
+          />
+
+          {/* Top Right Quote Badge */}
+          <div
+            style={{
+              width: '48px',
+              height: '48px',
+              borderRadius: '50%',
+              backgroundColor: '#f4f4f5',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: 'var(--font-sans)',
+              fontSize: '1.8rem',
+              fontWeight: 800,
+              color: '#000000',
+            }}
+          >
+            “
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr',
+            gap: '3.5rem',
+            alignItems: 'center',
+          }}
+          className="testimonial-main-grid"
+        >
+          {/* Left Column: Author Info & Cutout Image Card */}
+          <div style={{ maxWidth: '320px' }} className="reveal-blur delay-1">
+            <div style={{ marginBottom: '1.5rem' }}>
+              <DraggableTextBlock
+                id="testimonial_author"
+                as="div"
+                defaultText={`[${current.name}]`}
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.9rem',
+                  fontWeight: 700,
+                  color: '#000000',
+                }}
+              />
+              <DraggableTextBlock
+                id="testimonial_role"
+                as="div"
+                defaultText={current.role}
+                style={{
+                  fontSize: '0.8rem',
+                  color: 'var(--text-secondary)',
+                  fontWeight: 500,
+                  marginTop: '0.2rem',
+                }}
+              />
+            </div>
+
+            {/* Reviewer Photo with Bottom-Left Diagonal Cutout */}
+            <div
+              style={{
+                width: '100%',
+                height: '380px',
+                overflow: 'hidden',
+                backgroundColor: '#e6e6e8',
+                clipPath: 'polygon(0 0, 100% 0, 100% 100%, 22% 100%, 0 78%)',
+                marginBottom: '1.5rem',
+              }}
+            >
+              <img
+                key={current.id}
+                src={current.image}
+                alt={current.name}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block',
+                  animation: 'fadeIn 0.3s ease',
+                }}
+              />
+            </div>
+
+            {/* Left Nav Arrow */}
+            <div>
+              <button
+                onClick={handlePrev}
+                aria-label="Previous Testimonial"
+                style={{
+                  width: '46px',
+                  height: '46px',
+                  borderRadius: '50%',
+                  border: '1px solid #d4d4d8',
+                  backgroundColor: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#000000';
+                  e.currentTarget.style.backgroundColor = '#f4f4f5';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#d4d4d8';
+                  e.currentTarget.style.backgroundColor = '#ffffff';
+                }}
+              >
+                <ArrowLeft size={17} />
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column: Bold Display Quote & Rating */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }} className="reveal-blur delay-2">
+            <DraggableTextBlock
+              id="testimonial_quote"
+              as="blockquote"
+              multiline
+              defaultText={current.quote}
+              style={{
+                fontFamily: 'var(--font-sans)',
+                fontSize: 'clamp(2rem, 3.8vw, 3.2rem)',
+                fontWeight: 700,
+                lineHeight: '1.24',
+                letterSpacing: '-0.035em',
+                color: '#000000',
+              }}
+            />
+
+            {/* Rating Stars & Count */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+              <div style={{ display: 'flex', gap: '3px' }}>
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={18} fill="#ff7a00" color="#ff7a00" />
+                ))}
+              </div>
+              <span
+                style={{
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '0.95rem',
+                  fontWeight: 600,
+                  color: '#18181b',
+                }}
+              >
+                {current.rating.toFixed(1)} ({current.reviewCount} Reviews)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar: See What Our Customers Are Saying | ” | Next Arrow */}
+        <div
+          style={{
+            marginTop: '5rem',
+            paddingTop: '2.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+          className="reveal-blur"
+        >
+          <DraggableTextBlock
+            id="testimonial_bottom_bar"
+            as="div"
+            defaultText="See What Our Customers Are Saying"
+            style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: '0.92rem',
+              fontWeight: 600,
+              color: '#3f3f46',
+            }}
+          />
+
+          <div
+            style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: '2.2rem',
+              lineHeight: '1',
+              color: '#000000',
+              fontWeight: 800,
+            }}
+          >
+            ”
+          </div>
+
+          <button
+            onClick={handleNext}
+            aria-label="Next Testimonial"
+            style={{
+              width: '46px',
+              height: '46px',
+              borderRadius: '50%',
+              border: '1px solid #d4d4d8',
+              backgroundColor: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = '#000000';
+              e.currentTarget.style.backgroundColor = '#f4f4f5';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = '#d4d4d8';
+              e.currentTarget.style.backgroundColor = '#ffffff';
+            }}
+          >
+            <ArrowRight size={17} />
+          </button>
+        </div>
+      </div>
+
+      <style>{`
+        @media (min-width: 900px) {
+          .testimonial-main-grid {
+            grid-template-columns: 340px 1fr !important;
+            gap: 5rem !important;
+          }
+        }
+      `}</style>
+    </section>
+  );
+}

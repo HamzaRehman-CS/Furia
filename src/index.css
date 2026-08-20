@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  
+  --bg-primary: #f6f6f7;
+  --bg-secondary: #eeeeef;
+  --bg-hero: #ededef;
+  --bg-dark: #0e0e11;
+  --bg-dark-card: #16161a;
+  
+  --text-primary: #000000;
+  --text-secondary: #4a4a52;
+  --text-muted: #888892;
+  --text-light: #f5f5f7;
+  
+  --accent-orange: #ff5500;
+  --accent-orange-hover: #e04b00;
+  --accent-orange-light: #fff0e6;
+  
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-dashed: rgba(0, 0, 0, 0.08);
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 24px 50px rgba(0, 0, 0, 0.09);
+  --shadow-hover: 0 28px 60px rgba(0, 0, 0, 0.14);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-sans);
+  background-color: #f6f6f7;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: #f6f6f7;
+  color: var(--text-primary);
+}
+
+/* Typography */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Scroll Blur Reveal Animation System */
+.reveal-blur {
+  opacity: 0;
+  filter: blur(18px);
+  transform: translateY(35px);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, filter, transform;
+}
+
+.reveal-blur.is-revealed {
+  opacity: 1;
+  filter: blur(0px);
+  transform: translateY(0);
+}
+
+.delay-1 { transition-delay: 0.12s; }
+.delay-2 { transition-delay: 0.24s; }
+.delay-3 { transition-delay: 0.36s; }
+.delay-4 { transition-delay: 0.48s; }
+
+/* Architectural Dashed Grid Lines */
+.grid-bg-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  z-index: 1;
+}
+
+.grid-bg-col {
+  border-right: 1px dashed rgba(0, 0, 0, 0.08);
+  height: 100%;
+}
+
+.grid-bg-col:last-child {
+  border-right: none;
+}
+
+/* Custom Chamfered Polygon Card Shapes */
+.cut-shape-chamfer,
+.window-cut-chamfer {
+  clip-path: polygon(16% 0%, 100% 0%, 100% 84%, 84% 100%, 0% 100%, 0% 16%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), clip-path 0.3s ease;
+}
+
+.cut-shape-chamfer-deep,
+.window-cut-polygon,
+.window-cut-deep {
+  clip-path: polygon(24% 0%, 100% 0%, 100% 76%, 76% 100%, 0% 100%, 0% 24%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), clip-path 0.3s ease;
+}
+
+.cut-shape-chamfer-diagonal,
+.window-cut-angular,
+.window-cut-diagonal {
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), clip-path 0.3s ease;
+}
+
+.cut-shape-angled-top,
+.window-cut-angled-top {
+  clip-path: polygon(0 0, 85% 0, 100% 15%, 100% 100%, 0 100%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), clip-path 0.3s ease;
+}
+
+.cut-shape-chamfer-subtle,
+.window-cut-subtle {
+  clip-path: polygon(8% 0%, 100% 0%, 100% 92%, 92% 100%, 0% 100%, 0% 8%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), clip-path 0.3s ease;
+}
+
+.cut-shape-none,
+.window-cut-none {
+  clip-path: none;
+}
+
+/* Canva Editable Canvas Elements */
+.canva-editable-block {
+  position: relative;
+  transition: outline 0.15s ease, transform 0.1s ease;
+  cursor: grab !important;
+}
+
+.canva-editable-block:hover {
+  outline: 1.5px dashed var(--accent-orange);
+  outline-offset: 4px;
+}
+
+.canva-editable-block.canva-selected {
+  outline: 2px solid var(--accent-orange) !important;
+  outline-offset: 4px !important;
+  z-index: 100 !important;
+}
+
+/* Marquee keyframes */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-reverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+
+@keyframes flowerSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: 200%;
+  animation: marquee 26s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Container */
+.site-container {
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .site-container {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+/* Buttons */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-medium);
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.825rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-pill:hover {
+  background: var(--text-primary);
+  color: #ffffff;
+  border-color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.btn-pill-dark {
+  background: var(--text-primary);
+  color: #ffffff;
+  border-color: var(--text-primary);
+}
+
+.btn-pill-dark:hover {
+  background: #252528;
+  border-color: #252528;
+}
+
+.btn-orange {
+  background: var(--accent-orange);
+  color: #ffffff;
+  border: none;
+}
+
+.btn-orange:hover {
+  background: var(--accent-orange-hover);
+  box-shadow: 0 8px 24px rgba(255, 85, 0, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Flower spin hover */
+.flower-spin-hover:hover svg {
+  transform: rotate(180deg);
+}
