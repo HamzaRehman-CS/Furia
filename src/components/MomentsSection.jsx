@@ -112,7 +112,11 @@ export default function MomentsSection({ onQuickView, onAddToCart }) {
             </div>
 
             {/* Main Center Image Card with Custom Split Frame */}
-            <div style={{ position: 'relative', width: '100%', maxWidth: '480px' }}>
+            <DraggableTextBlock
+              id="moments_left_card_box"
+              as="div"
+              style={{ position: 'relative', width: '100%', maxWidth: '480px' }}
+            >
               <div
                 className={`cut-shape-${cutShapes.momentsCardLeft || 'chamfer'}`}
                 style={{
@@ -162,7 +166,7 @@ export default function MomentsSection({ onQuickView, onAddToCart }) {
                   }}
                 />
               </div>
-            </div>
+            </DraggableTextBlock>
           </div>
 
           {/* Right Column: Top Manifesto & Small Thumbnail + Bottom Dagger Jacket Card */}
@@ -196,7 +200,11 @@ export default function MomentsSection({ onQuickView, onAddToCart }) {
               </div>
 
               {/* Small Card Top Right with ($120) */}
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.6rem' }}>
+              <DraggableTextBlock
+                id="moments_small_card_box"
+                as="div"
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.6rem' }}
+              >
                 <div
                   style={{
                     width: '100px',
@@ -227,35 +235,43 @@ export default function MomentsSection({ onQuickView, onAddToCart }) {
                     color: '#000000',
                   }}
                 />
-              </div>
+              </DraggableTextBlock>
             </div>
 
             {/* Bottom Card Right: Dagger Jacket Detail with Cut & (45%) on right */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative' }}>
               <div style={{ display: 'flex', alignItems: 'flex-end', gap: '1.5rem' }}>
-                <div
-                  className={`cut-shape-${cutShapes.momentsCardVarsity || 'chamfer-deep'}`}
+                <DraggableTextBlock
+                  id="moments_varsity_card_box"
+                  as="div"
                   style={{
                     flex: 1,
                     maxWidth: '420px',
-                    height: '360px',
-                    overflow: 'hidden',
-                    backgroundColor: '#b5b5b8',
                   }}
                 >
-                  <img
-                    src={ASSETS.bomberDetail}
-                    alt="Dagger Graphic Jacket"
+                  <div
+                    className={`cut-shape-${cutShapes.momentsCardVarsity || 'chamfer-deep'}`}
                     style={{
                       width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                      height: '360px',
+                      overflow: 'hidden',
+                      backgroundColor: '#b5b5b8',
                     }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
-                  />
-                </div>
+                  >
+                    <img
+                      src={ASSETS.bomberDetail}
+                      alt="Dagger Graphic Jacket"
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
+                      onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
+                    />
+                  </div>
+                </DraggableTextBlock>
 
                 {/* (45%) on the Right Side of the Card */}
                 <div style={{ paddingBottom: '2rem' }}>

@@ -126,31 +126,40 @@ export default function CategoryShowcase({ onQuickView, onAddToCart }) {
             className="reveal-blur"
           >
             {/* Model Card Window with Dynamic Polygon Cut */}
-            <div
-              className={`cut-shape-${cutShapes.categoryShowcaseCard || 'chamfer-diagonal'}`}
+            <DraggableTextBlock
+              id="category_showcase_model_card"
+              as="div"
               style={{
                 position: 'relative',
                 zIndex: 2,
                 width: '100%',
                 maxWidth: '340px',
-                height: '460px',
-                backgroundColor: '#e6e6e8',
-                boxShadow: 'var(--shadow-lg)',
               }}
             >
-              <img
-                key={activeCategory.id}
-                src={activeCategory.image}
-                alt={activeCategory.name}
+              <div
+                className={`cut-shape-${cutShapes.categoryShowcaseCard || 'chamfer-diagonal'}`}
                 style={{
                   width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  display: 'block',
-                  animation: 'fadeIn 0.35s ease-out',
+                  height: '460px',
+                  backgroundColor: '#e6e6e8',
+                  boxShadow: 'var(--shadow-lg)',
+                  overflow: 'hidden',
                 }}
-              />
-            </div>
+              >
+                <img
+                  key={activeCategory.id}
+                  src={activeCategory.image}
+                  alt={activeCategory.name}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block',
+                    animation: 'fadeIn 0.35s ease-out',
+                  }}
+                />
+              </div>
+            </DraggableTextBlock>
           </div>
 
           {/* Right Column: Categories List */}

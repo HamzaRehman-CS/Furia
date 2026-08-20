@@ -40,99 +40,104 @@ export default function DraggableTextBlock({
     setInlineValue(textContent);
   }, [textContent]);
 
-  // Pointer & Touch drag logic for smooth Canva-like repositioning
+  // Universal Window-Level Drag Controller for 100% Reliable Canva Dragging
   const handlePointerDown = (e) => {
-    if (!isEditMode) return;
-    if (isEditingInline) return;
+    if (!isEditMode || isEditingInline) return;
     if (e.button !== undefined && e.button !== 0 && e.pointerType === 'mouse') return;
-
-    // If clicking on toolbar or buttons, do not initiate drag
     if (e.target.closest('.canva-toolbar') || e.target.closest('.inline-edit-overlay')) return;
+
+    e.preventDefault();
+    e.stopPropagation();
 
     setSelectedBlockId(id);
     isDraggingRef.current = true;
     dragStartPosRef.current = { x: e.clientX, y: e.clientY };
     elementStartPosRef.current = { x: currentPos.x || 0, y: currentPos.y || 0 };
 
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch (err) {}
-    e.stopPropagation();
+    let lastX = currentPos.x || 0;
+    let lastY = currentPos.y || 0;
+
+    const handleWindowPointerMove = (moveEvent) => {
+      if (!isDraggingRef.current || !elementRef.current) return;
+
+      const deltaX = moveEvent.clientX - dragStartPosRef.current.x;
+      const deltaY = moveEvent.clientY - dragStartPosRef.current.y;
+
+      lastX = Math.round(elementStartPosRef.current.x + deltaX);
+      lastY = Math.round(elementStartPosRef.current.y + deltaY);
+
+      elementRef.current.style.transform = `translate3d(${lastX}px, ${lastY}px, 0)`;
+      elementRef.current.style.zIndex = '9999';
+    };
+
+    const handleWindowPointerUp = () => {
+      window.removeEventListener('pointermove', handleWindowPointerMove);
+      window.removeEventListener('pointerup', handleWindowPointerUp);
+      window.removeEventListener('pointercancel', handleWindowPointerUp);
+
+      if (isDraggingRef.current) {
+        isDraggingRef.current = false;
+        if (elementRef.current) {
+          elementRef.current.style.zIndex = isSelected ? '999' : 'auto';
+        }
+        updatePosition(id, { x: lastX, y: lastY });
+      }
+    };
+
+    window.addEventListener('pointermove', handleWindowPointerMove, { passive: false });
+    window.addEventListener('pointerup', handleWindowPointerUp);
+    window.addEventListener('pointercancel', handleWindowPointerUp);
   };
 
-  const handlePointerMove = (e) => {
-    if (!isDraggingRef.current || !elementRef.current) return;
-
-    const deltaX = e.clientX - dragStartPosRef.current.x;
-    const deltaY = e.clientY - dragStartPosRef.current.y;
-
-    const newX = Math.round(elementStartPosRef.current.x + deltaX);
-    const newY = Math.round(elementStartPosRef.current.y + deltaY);
-
-    // Direct DOM transform for 60fps lag-free response on mobile and desktop
-    elementRef.current.style.transform = `translate3d(${newX}px, ${newY}px, 0)`;
-    e.stopPropagation();
-  };
-
-  const handlePointerUp = (e) => {
-    if (isDraggingRef.current) {
-      isDraggingRef.current = false;
-      const deltaX = e.clientX - dragStartPosRef.current.x;
-      const deltaY = e.clientY - dragStartPosRef.current.y;
-
-      const finalX = Math.round(elementStartPosRef.current.x + deltaX);
-      const finalY = Math.round(elementStartPosRef.current.y + deltaY);
-
-      updatePosition(id, { x: finalX, y: finalY });
-
-      try {
-        e.currentTarget.releasePointerCapture(e.pointerId);
-      } catch (err) {}
-      e.stopPropagation();
-    }
-  };
-
-  // Touch event fallbacks for older Android browsers
+  // Touch handlers for mobile / Android devices
   const handleTouchStart = (e) => {
     if (!isEditMode || isEditingInline) return;
     if (e.target.closest('.canva-toolbar') || e.target.closest('.inline-edit-overlay')) return;
     const touch = e.touches[0];
     if (!touch) return;
 
+    e.stopPropagation();
     setSelectedBlockId(id);
     isDraggingRef.current = true;
     dragStartPosRef.current = { x: touch.clientX, y: touch.clientY };
     elementStartPosRef.current = { x: currentPos.x || 0, y: currentPos.y || 0 };
-  };
 
-  const handleTouchMove = (e) => {
-    if (!isDraggingRef.current || !elementRef.current) return;
-    const touch = e.touches[0];
-    if (!touch) return;
+    let lastX = currentPos.x || 0;
+    let lastY = currentPos.y || 0;
 
-    const deltaX = touch.clientX - dragStartPosRef.current.x;
-    const deltaY = touch.clientY - dragStartPosRef.current.y;
+    const handleWindowTouchMove = (moveEvent) => {
+      if (!isDraggingRef.current || !elementRef.current) return;
+      const t = moveEvent.touches[0];
+      if (!t) return;
 
-    const newX = Math.round(elementStartPosRef.current.x + deltaX);
-    const newY = Math.round(elementStartPosRef.current.y + deltaY);
+      const deltaX = t.clientX - dragStartPosRef.current.x;
+      const deltaY = t.clientY - dragStartPosRef.current.y;
 
-    elementRef.current.style.transform = `translate3d(${newX}px, ${newY}px, 0)`;
-  };
+      lastX = Math.round(elementStartPosRef.current.x + deltaX);
+      lastY = Math.round(elementStartPosRef.current.y + deltaY);
 
-  const handleTouchEnd = (e) => {
-    if (isDraggingRef.current) {
-      isDraggingRef.current = false;
-      const touch = e.changedTouches[0];
-      if (touch) {
-        const deltaX = touch.clientX - dragStartPosRef.current.x;
-        const deltaY = touch.clientY - dragStartPosRef.current.y;
+      elementRef.current.style.transform = `translate3d(${lastX}px, ${lastY}px, 0)`;
+      elementRef.current.style.zIndex = '9999';
+      moveEvent.preventDefault();
+    };
 
-        const finalX = Math.round(elementStartPosRef.current.x + deltaX);
-        const finalY = Math.round(elementStartPosRef.current.y + deltaY);
+    const handleWindowTouchEnd = () => {
+      window.removeEventListener('touchmove', handleWindowTouchMove);
+      window.removeEventListener('touchend', handleWindowTouchEnd);
+      window.removeEventListener('touchcancel', handleWindowTouchEnd);
 
-        updatePosition(id, { x: finalX, y: finalY });
+      if (isDraggingRef.current) {
+        isDraggingRef.current = false;
+        if (elementRef.current) {
+          elementRef.current.style.zIndex = isSelected ? '999' : 'auto';
+        }
+        updatePosition(id, { x: lastX, y: lastY });
       }
-    }
+    };
+
+    window.addEventListener('touchmove', handleWindowTouchMove, { passive: false });
+    window.addEventListener('touchend', handleWindowTouchEnd);
+    window.addEventListener('touchcancel', handleWindowTouchEnd);
   };
 
   const handleInlineSave = () => {
