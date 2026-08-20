@@ -5,17 +5,10 @@ import { useEditor } from '../context/EditorContext';
 
 export default function Navbar({ onOpenSearch, onOpenCart, cartCount, wishlistCount, onScrollToSection }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { setIsAuthenticated, setIsAdminPortalOpen } = useEditor();
 
   const handleLogoClick = (e) => {
     e.preventDefault();
-    const pass = window.prompt("Enter Admin Password:");
-    if (pass === "12345") {
-      setIsAuthenticated(true);
-      setIsAdminPortalOpen(true);
-    } else if (pass !== null) {
-      alert("Incorrect password.");
-    }
+    onScrollToSection('hero');
   };
 
   return (

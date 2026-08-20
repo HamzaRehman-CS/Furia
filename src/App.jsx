@@ -13,7 +13,6 @@ import CartDrawer from './components/CartDrawer';
 import QuickViewModal from './components/QuickViewModal';
 import SearchModal from './components/SearchModal';
 import Toast from './components/Toast';
-import AdminPortal from './components/AdminPortal';
 import { EditorProvider } from './context/EditorContext';
 import { useScrollReveal } from './hooks/useScrollReveal';
 import { MOMENTO_PRODUCTS, ASSETS } from './data/products';
@@ -213,9 +212,6 @@ function AppContent() {
       />
 
       <Toast toast={toast} onClose={() => setToast(null)} />
-
-      {/* Admin Portal & Canva Mode Controls */}
-      <AdminPortal />
     </div>
   );
 }
