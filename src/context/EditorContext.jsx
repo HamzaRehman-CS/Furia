@@ -7,82 +7,44 @@ import {
   ACCORDION_COLLECTIONS as INITIAL_COLLECTIONS
 } from '../data/products';
 
-const STORAGE_KEY = 'furia_site_editor_config_v3';
+const STORAGE_KEY = 'furia_site_editor_config_v4';
 
-export const DEFAULT_TEXTS = {
-  // Hero Section
-  hero_top_label: '//STYLED FOR LIFE.',
-  hero_title_left: 'where\n- style',
-  hero_tag: '//FASHION',
-  hero_desc: 'Explore curated collections:\nexclusive drops and everyday\nessentials all thoughtfully\ndesigned in one stylish\nshopping destination.',
-  hero_collection_tag: '/ New\nCollection 2026',
-  hero_title_right: 'lives\n- now',
-  hero_stat_num: '280K',
-  hero_stat_label: 'PEOPLE WE INSPIRE',
-
-  // Moments Section
-  moments_title: 'All - about\nmoments ©26',
-  moments_btn_text: 'LEARN MORE',
-  moments_caption_left: '©International - going distance 2026',
-  moments_manifesto: 'Where Elegance Meets\nSustainability Luxury\nMade Accessible',
-  moments_card1_price: '($120)',
-  moments_card2_badge: '(45%)',
-  moments_caption_right: '©International - just do it 2026',
-
-  // Categories Section
-  categories_intro: "Every piece carries rhythm beyond clothing; it's motion and meaning where street energy meets",
-  categories_btn: 'SEE PRODUCT',
-  categories_tag: '[CATEGORIES]',
-
-  // Catalog Section
-  catalog_tag: '// CURATED COLLECTION 2026',
-  catalog_title: 'Explore By Category',
-  catalog_desc: 'Filter precision-engineered garments by silhouette, Japanese selvedge denim, insulated technical outer layers, and footwear.',
-
-  // Momento Carousel
-  momento_title: '©furia -\njacket momento',
-  momento_year: '2026',
-  momento_tag: '[Other]',
-
-  // Testimonials
-  testimonial_tag: '[Testimonial]',
-  testimonial_quote: 'Everything is absolutely perfect! From the fabric quality to the flawless fit every piece feels premium. This brand has completely transformed my wardrobe.',
-  testimonial_author: '[Emma Williams]',
-  testimonial_role: 'Fashion Stylist',
-  testimonial_bottom_bar: 'See What Our Customers Are Saying',
-
-  // Accordion
-  accordion_intro: 'From enduring classics to daring statement pieces, our collections are crafted with intention.',
-  accordion_tag: 'Being Part Of Our journey',
-
-  // Footer
-  footer_tag: 'CONTACT US',
-  footer_title_1: 'Fast Selling Urban',
-  footer_title_2: '___Fashion Collection',
-  footer_address: '5567 Washington Ave, America, 32289',
-  footer_phone: '+016 76234396',
-  footer_email: 'hello@orbix.studio',
-  footer_hours: '08:00 - 11:00 pm',
-  footer_copyright: '© 2026 Furia. All Rights Reserved.',
+// Helper to sanitize any legacy 'Velour' text from cached states
+const sanitizeBrandText = (obj) => {
+  if (!obj || typeof obj !== 'object') return obj;
+  const cleaned = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (typeof v === 'string') {
+      cleaned[k] = v
+        .replace(/VELOUR/g, 'FURIA')
+        .replace(/Velour/g, 'Furia')
+        .replace(/velour/g, 'furia');
+    } else {
+      cleaned[k] = v;
+    }
+  }
+  return cleaned;
 };
 
-export const DEFAULT_CUT_SHAPES = {
-  momentsCardLeft: 'chamfer', // fleece sweater
-  momentsCardSmall: 'angled-top', // ($120) card
-  momentsCardVarsity: 'chamfer-deep', // varsity (45%) card
-  categoryShowcaseCard: 'chamfer-diagonal', // categories model
-  accordionCard: 'chamfer-subtle', // collections left model
-  momentoCards: 'chamfer', // jacket carousel cards
-};
-
-const EditorContext = createContext(null);
+// Purge legacy storage keys once
+try {
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.includes('velour_')) {
+      localStorage.removeItem(k);
+    }
+  }
+} catch (e) {}
 
 export function EditorProvider({ children }) {
   // Load saved configuration or fall back to defaults
   const [texts, setTexts] = useState(() => {
     try {
       const saved = localStorage.getItem(`${STORAGE_KEY}_texts`);
-      return saved ? { ...DEFAULT_TEXTS, ...JSON.parse(saved) } : DEFAULT_TEXTS;
+      if (saved) {
+        return sanitizeBrandText({ ...DEFAULT_TEXTS, ...JSON.parse(saved) });
+      }
+      return DEFAULT_TEXTS;
     } catch (e) {
       return DEFAULT_TEXTS;
     }
@@ -135,10 +97,16 @@ export function EditorProvider({ children }) {
 
   const [activeCatalogCategory, setActiveCatalogCategory] = useState('All');
 
-  // Admin and Live Canvas state
-  const [isEditMode, setIsEditMode] = useState(false);
+  // Admin and Live Canvas state - always unlocked and available
+  const [isEditMode, setIsEditMode] = useState(() => {
+    try {
+      return localStorage.getItem(`${STORAGE_KEY}_edit_mode`) === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
   const [isAdminPortalOpen, setIsAdminPortalOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [selectedBlockId, setSelectedBlockId] = useState(null);
   const [showGridGuides, setShowGridGuides] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);

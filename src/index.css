@@ -264,3 +264,48 @@ body {
 .flower-spin-hover:hover svg {
   transform: rotate(180deg);
 }
+
+/* Android & Mobile Touch Experience Enhancements */
+@media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: pan-y;
+  }
+
+  button, a {
+    min-height: 42px;
+    touch-action: manipulation;
+  }
+
+  .canva-editable-block {
+    touch-action: none !important;
+  }
+
+  /* Make sure floating admin buttons don't block content on mobile */
+  .floating-admin-controls {
+    bottom: 16px !important;
+    right: 16px !important;
+    transform: scale(0.92);
+    transform-origin: bottom right;
+  }
+}
+
+/* Canva Editable System Styles */
+.canva-editable-block {
+  user-select: none;
+  -webkit-user-select: none;
+  will-change: transform;
+}
+
+.canva-editable-block:hover {
+  outline: 1.5px dashed rgba(255, 85, 0, 0.75) !important;
+  outline-offset: 4px;
+}
+
+.canva-selected {
+  outline: 2px solid var(--accent-orange) !important;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgba(255, 85, 0, 0.15);
+}

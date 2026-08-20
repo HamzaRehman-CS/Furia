@@ -15,14 +15,35 @@ export default function TestimonialSection() {
     setCurrentIndex((prev) => (prev === TESTIMONIALS_DATA.length - 1 ? 0 : prev + 1));
   };
 
+  const [touchStart, setTouchStart] = useState(null);
+
+  const handleTouchStart = (e) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!touchStart) return;
+    const touchEnd = e.changedTouches[0].clientX;
+    const diff = touchStart - touchEnd;
+    if (diff > 45) {
+      handleNext();
+    } else if (diff < -45) {
+      handlePrev();
+    }
+    setTouchStart(null);
+  };
+
   return (
     <section
       id="reviews"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
       style={{
         paddingTop: '6rem',
         paddingBottom: '6rem',
         backgroundColor: '#ffffff',
         position: 'relative',
+        userSelect: 'none',
       }}
     >
       <div className="site-container">
@@ -36,12 +57,12 @@ export default function TestimonialSection() {
           }}
           className="reveal-blur"
         >
-          {/* Counter: 01/8 */}
+          {/* Counter: 01/08 */}
           <div style={{ display: 'flex', alignItems: 'baseline' }}>
             <span
               style={{
                 fontFamily: 'var(--font-sans)',
-                fontSize: '3rem',
+                fontSize: 'clamp(2.4rem, 4vw, 3.2rem)',
                 fontWeight: 800,
                 color: '#000000',
                 lineHeight: '1',
@@ -58,7 +79,7 @@ export default function TestimonialSection() {
                 fontWeight: 500,
               }}
             >
-              /8
+              /0{TESTIMONIALS_DATA.length}
             </span>
           </div>
 
@@ -101,34 +122,36 @@ export default function TestimonialSection() {
           style={{
             display: 'grid',
             gridTemplateColumns: '1fr',
-            gap: '3.5rem',
+            gap: '3rem',
             alignItems: 'center',
           }}
           className="testimonial-main-grid"
         >
           {/* Left Column: Author Info & Cutout Image Card */}
-          <div style={{ maxWidth: '320px' }} className="reveal-blur delay-1">
+          <div style={{ maxWidth: '340px' }} className="reveal-blur delay-1">
             <div style={{ marginBottom: '1.5rem' }}>
               <DraggableTextBlock
-                id="testimonial_author"
+                id={`testimonial_author_${currentIndex}`}
                 as="div"
+                key={`author-${currentIndex}`}
                 defaultText={`[${current.name}]`}
                 style={{
                   fontFamily: 'var(--font-mono)',
-                  fontSize: '0.9rem',
+                  fontSize: '0.92rem',
                   fontWeight: 700,
                   color: '#000000',
                 }}
               />
               <DraggableTextBlock
-                id="testimonial_role"
+                id={`testimonial_role_${currentIndex}`}
                 as="div"
+                key={`role-${currentIndex}`}
                 defaultText={current.role}
                 style={{
-                  fontSize: '0.8rem',
+                  fontSize: '0.82rem',
                   color: 'var(--text-secondary)',
                   fontWeight: 500,
-                  marginTop: '0.2rem',
+                  marginTop: '0.25rem',
                 }}
               />
             </div>
@@ -145,7 +168,7 @@ export default function TestimonialSection() {
               }}
             >
               <img
-                key={current.id}
+                key={`img-${current.id}-${currentIndex}`}
                 src={current.image}
                 alt={current.name}
                 style={{
@@ -153,19 +176,19 @@ export default function TestimonialSection() {
                   height: '100%',
                   objectFit: 'cover',
                   display: 'block',
-                  animation: 'fadeIn 0.3s ease',
+                  animation: 'fadeIn 0.35s ease',
                 }}
               />
             </div>
 
             {/* Left Nav Arrow */}
-            <div>
+            <div style={{ display: 'flex', gap: '0.6rem' }}>
               <button
                 onClick={handlePrev}
                 aria-label="Previous Testimonial"
                 style={{
-                  width: '46px',
-                  height: '46px',
+                  width: '48px',
+                  height: '48px',
                   borderRadius: '50%',
                   border: '1px solid #d4d4d8',
                   backgroundColor: '#ffffff',
@@ -184,7 +207,33 @@ export default function TestimonialSection() {
                   e.currentTarget.style.backgroundColor = '#ffffff';
                 }}
               >
-                <ArrowLeft size={17} />
+                <ArrowLeft size={18} />
+              </button>
+              <button
+                onClick={handleNext}
+                aria-label="Next Testimonial"
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  border: '1px solid #d4d4d8',
+                  backgroundColor: '#ffffff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = '#000000';
+                  e.currentTarget.style.backgroundColor = '#f4f4f5';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = '#d4d4d8';
+                  e.currentTarget.style.backgroundColor = '#ffffff';
+                }}
+              >
+                <ArrowRight size={18} />
               </button>
             </div>
           </div>
@@ -192,13 +241,14 @@ export default function TestimonialSection() {
           {/* Right Column: Bold Display Quote & Rating */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }} className="reveal-blur delay-2">
             <DraggableTextBlock
-              id="testimonial_quote"
+              id={`testimonial_quote_${currentIndex}`}
               as="blockquote"
+              key={`quote-${currentIndex}`}
               multiline
               defaultText={current.quote}
               style={{
                 fontFamily: 'var(--font-sans)',
-                fontSize: 'clamp(2rem, 3.8vw, 3.2rem)',
+                fontSize: 'clamp(1.75rem, 3.4vw, 3rem)',
                 fontWeight: 700,
                 lineHeight: '1.24',
                 letterSpacing: '-0.035em',
@@ -206,8 +256,8 @@ export default function TestimonialSection() {
               }}
             />
 
-            {/* Rating Stars & Count */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+            {/* Rating Stars & Count & Highlight Badge */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1rem' }}>
               <div style={{ display: 'flex', gap: '3px' }}>
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} size={18} fill="#ff7a00" color="#ff7a00" />
@@ -221,8 +271,23 @@ export default function TestimonialSection() {
                   color: '#18181b',
                 }}
               >
-                {current.rating.toFixed(1)} ({current.reviewCount} Reviews)
+                {current.rating.toFixed(1)} ({current.reviewCount} Verified Reviews)
               </span>
+              {current.highlight && (
+                <span
+                  style={{
+                    padding: '0.3rem 0.75rem',
+                    backgroundColor: '#f4f4f5',
+                    borderRadius: '9999px',
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    color: '#52525b',
+                  }}
+                >
+                  {current.highlight}
+                </span>
+              )}
             </div>
           </div>
         </div>

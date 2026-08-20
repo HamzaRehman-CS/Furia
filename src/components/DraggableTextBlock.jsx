@@ -40,26 +40,28 @@ export default function DraggableTextBlock({
     setInlineValue(textContent);
   }, [textContent]);
 
-  // Pointer drag logic for smooth Canva-like repositioning
+  // Pointer & Touch drag logic for smooth Canva-like repositioning
   const handlePointerDown = (e) => {
     if (!isEditMode) return;
     if (isEditingInline) return;
-    if (e.button !== 0) return; // Only primary mouse button
+    if (e.button !== undefined && e.button !== 0 && e.pointerType === 'mouse') return;
 
     // If clicking on toolbar or buttons, do not initiate drag
-    if (e.target.closest('.canva-toolbar')) return;
+    if (e.target.closest('.canva-toolbar') || e.target.closest('.inline-edit-overlay')) return;
 
     setSelectedBlockId(id);
     isDraggingRef.current = true;
     dragStartPosRef.current = { x: e.clientX, y: e.clientY };
     elementStartPosRef.current = { x: currentPos.x || 0, y: currentPos.y || 0 };
 
-    e.currentTarget.setPointerCapture(e.pointerId);
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch (err) {}
     e.stopPropagation();
   };
 
   const handlePointerMove = (e) => {
-    if (!isDraggingRef.current) return;
+    if (!isDraggingRef.current || !elementRef.current) return;
 
     const deltaX = e.clientX - dragStartPosRef.current.x;
     const deltaY = e.clientY - dragStartPosRef.current.y;
@@ -67,17 +69,69 @@ export default function DraggableTextBlock({
     const newX = Math.round(elementStartPosRef.current.x + deltaX);
     const newY = Math.round(elementStartPosRef.current.y + deltaY);
 
-    updatePosition(id, { x: newX, y: newY });
+    // Direct DOM transform for 60fps lag-free response on mobile and desktop
+    elementRef.current.style.transform = `translate3d(${newX}px, ${newY}px, 0)`;
     e.stopPropagation();
   };
 
   const handlePointerUp = (e) => {
     if (isDraggingRef.current) {
       isDraggingRef.current = false;
+      const deltaX = e.clientX - dragStartPosRef.current.x;
+      const deltaY = e.clientY - dragStartPosRef.current.y;
+
+      const finalX = Math.round(elementStartPosRef.current.x + deltaX);
+      const finalY = Math.round(elementStartPosRef.current.y + deltaY);
+
+      updatePosition(id, { x: finalX, y: finalY });
+
       try {
         e.currentTarget.releasePointerCapture(e.pointerId);
-      } catch {}
+      } catch (err) {}
       e.stopPropagation();
+    }
+  };
+
+  // Touch event fallbacks for older Android browsers
+  const handleTouchStart = (e) => {
+    if (!isEditMode || isEditingInline) return;
+    if (e.target.closest('.canva-toolbar') || e.target.closest('.inline-edit-overlay')) return;
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    setSelectedBlockId(id);
+    isDraggingRef.current = true;
+    dragStartPosRef.current = { x: touch.clientX, y: touch.clientY };
+    elementStartPosRef.current = { x: currentPos.x || 0, y: currentPos.y || 0 };
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDraggingRef.current || !elementRef.current) return;
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    const deltaX = touch.clientX - dragStartPosRef.current.x;
+    const deltaY = touch.clientY - dragStartPosRef.current.y;
+
+    const newX = Math.round(elementStartPosRef.current.x + deltaX);
+    const newY = Math.round(elementStartPosRef.current.y + deltaY);
+
+    elementRef.current.style.transform = `translate3d(${newX}px, ${newY}px, 0)`;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (isDraggingRef.current) {
+      isDraggingRef.current = false;
+      const touch = e.changedTouches[0];
+      if (touch) {
+        const deltaX = touch.clientX - dragStartPosRef.current.x;
+        const deltaY = touch.clientY - dragStartPosRef.current.y;
+
+        const finalX = Math.round(elementStartPosRef.current.x + deltaX);
+        const finalY = Math.round(elementStartPosRef.current.y + deltaY);
+
+        updatePosition(id, { x: finalX, y: finalY });
+      }
     }
   };
 
@@ -109,9 +163,12 @@ export default function DraggableTextBlock({
       : style.fontSize,
     transition: isDraggingRef.current ? 'none' : 'transform 0.15s ease-out, box-shadow 0.2s ease',
     position: 'relative',
-    cursor: isEditMode ? 'move' : (style.cursor || 'inherit'),
+    cursor: isEditMode ? 'grab' : (style.cursor || 'inherit'),
     userSelect: isEditMode && !isEditingInline ? 'none' : 'auto',
     touchAction: isEditMode ? 'none' : 'auto',
+    outline: isEditMode ? (isSelected ? '2px solid var(--accent-orange)' : '1px dashed rgba(255, 85, 0, 0.45)') : 'none',
+    outlineOffset: isEditMode ? '4px' : '0px',
+    borderRadius: isEditMode ? '4px' : style.borderRadius,
   };
 
   // Render text with line breaks
@@ -137,6 +194,10 @@ export default function DraggableTextBlock({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       onClick={(e) => {
         if (isEditMode) {
           e.stopPropagation();

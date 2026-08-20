@@ -298,12 +298,12 @@ export const TESTIMONIALS_DATA = [
   {
     id: 1,
     name: 'Emma Williams',
-    role: 'Fashion Stylist',
+    role: 'Fashion Stylist & Visual Consultant, London',
     image: ASSETS.reviewerEmma,
     rating: 5.0,
     reviewCount: 49,
-    quote: 'Everything is absolutely perfect! From the fabric quality to the flawless fit every piece feels premium. This brand has completely transformed my wardrobe.',
-    highlight: 'Flawless Fit & Premium Materials'
+    quote: 'Everything is absolutely spot on. From the heavyweight drape of the cotton to the weatherproof shell on the outerwear, every garment feels bespoke. It is rare to find modern luxury streetwear with this level of tailoring discipline.',
+    highlight: 'Flawless Fit & Tailoring Discipline'
   },
   {
     id: 2,
@@ -312,18 +312,68 @@ export const TESTIMONIALS_DATA = [
     image: ASSETS.wireframeModel,
     rating: 5.0,
     reviewCount: 64,
-    quote: 'The architectural silhouettes and tactical accents are unmatched. You can feel the intention and precision in every single stitch and seam.',
-    highlight: 'Architectural Silhouettes'
+    quote: 'The architectural silhouettes and tactical accents are unmatched. You can feel the intention in every stitch—it delivers an elevated runway look without sacrificing daily functional utility.',
+    highlight: 'Architectural Silhouettes & Precision'
   },
   {
     id: 3,
     name: 'Elena Rostova',
-    role: 'Senior Art Curator',
+    role: 'Senior Art Curator, Berlin',
     image: ASSETS.editorialCard,
     rating: 4.9,
     reviewCount: 38,
-    quote: 'Furia strikes the elusive balance between avant-garde editorial runway presence and effortless everyday wearability. Truly visionary.',
-    highlight: 'Effortless Wearability'
+    quote: 'Furia strikes that elusive balance between runway presence and effortless everyday wearability. The monochrome palette and precise geometries create an immediate editorial impact wherever you go.',
+    highlight: 'Effortless Wearability & Geometry'
+  },
+  {
+    id: 4,
+    name: 'Liam Chen',
+    role: 'Industrial Designer, Singapore',
+    image: ASSETS.tracksuit,
+    rating: 5.0,
+    reviewCount: 52,
+    quote: 'As an industrial designer, I obsess over hardware and ergonomics. The magnetic storm closures, matte weather-sealed zippers, and articulated cutouts prove this brand respects true craftsmanship.',
+    highlight: 'Ergonomic Hardware & Craftsmanship'
+  },
+  {
+    id: 5,
+    name: 'Sofia Marchetti',
+    role: 'Editorial Photographer, Milan',
+    image: ASSETS.sweater,
+    rating: 5.0,
+    reviewCount: 71,
+    quote: 'The way the textiles catch ambient light in outdoor shoots is incredible. My models love the comfortable articulated fits, and the pieces always command attention in front of the lens.',
+    highlight: 'Camera-Ready Textures & Drapes'
+  },
+  {
+    id: 6,
+    name: 'Julian Becker',
+    role: 'Architect & Urban Planner, Zurich',
+    image: ASSETS.heroModel,
+    rating: 4.9,
+    reviewCount: 43,
+    quote: 'Minimalist, structural, and built to withstand real weather transitions. Furia outerwear has become my daily uniform from studio drafting to on-site inspections in the rain.',
+    highlight: 'Structural Minimalism for All Weather'
+  },
+  {
+    id: 7,
+    name: 'Aria Tanaka',
+    role: 'Brand Strategist & Trend Forecaster, Seoul',
+    image: ASSETS.bomberDetail,
+    rating: 5.0,
+    reviewCount: 86,
+    quote: 'In an era of disposable fast fashion, Furia feels like a deliberate return to substance. The subtle branding and confident silhouettes make a powerful statement without screaming.',
+    highlight: 'Substance & Forward-Thinking Silhouette'
+  },
+  {
+    id: 8,
+    name: 'Devon Miller',
+    role: 'Music Producer & Sound Engineer, Los Angeles',
+    image: ASSETS.statementThumb,
+    rating: 5.0,
+    reviewCount: 58,
+    quote: 'Lightweight mobility on stage, sleek enough for private listening sessions, and tough enough for constant travel. Hands down the cleanest technical garments in my rotation.',
+    highlight: 'Stage-Ready Mobility & Durability'
   }
 ];
 

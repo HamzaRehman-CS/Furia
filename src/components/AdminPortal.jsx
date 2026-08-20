@@ -68,8 +68,56 @@ export default function AdminPortal() {
 
   return (
     <>
+      {/* Top Banner when Live Canvas / Edit Mode is active */}
+      {isEditMode && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '16px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 10000,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.85rem',
+            backgroundColor: '#18181b',
+            color: '#ffffff',
+            padding: '0.6rem 1.25rem',
+            borderRadius: '9999px',
+            boxShadow: '0 12px 36px rgba(0,0,0,0.35)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            fontSize: '0.82rem',
+            fontWeight: 600,
+            maxWidth: '94vw',
+            pointerEvents: 'auto',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent-orange)', display: 'inline-block' }} />
+            <span><strong>Live Canvas Active:</strong> Drag any text to reposition</span>
+          </div>
+          <button
+            onClick={() => setIsEditMode(false)}
+            style={{
+              backgroundColor: 'var(--accent-orange)',
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '9999px',
+              padding: '0.35rem 0.85rem',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Done Editing
+          </button>
+        </div>
+      )}
+
       {isAuthenticated && (
         <div
+          className="floating-admin-controls"
           style={{
             position: 'fixed',
             bottom: '24px',
